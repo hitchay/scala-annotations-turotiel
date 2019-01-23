@@ -1,0 +1,152 @@
+
+\documentclass[runningheads]{llncs}
+\usepackage[utf8x]{inputenc}
+%
+\usepackage{graphicx}
+
+
+%
+\title{Tutoriel sur les annotations en Scala}
+
+\author{El Houssin AAFIR\orcidID{EID2} }
+%
+% First names are abbreviated in the running head.
+% If there are more than two authors, 'et al.' is used.
+%
+\institute{Université Paris 13}
+\begin{document}
+%
+\maketitle              % typeset the header of the contribution
+%
+
+
+\section{Introduction}
+Comme \textbf{Java} et \textbf{.Net}, \textbf{Scala} support aussi les annotations, que vous avez probablement déjà vu, ces annotations permettent d'ajouter des informations sémantiques appelés métadonnées, ces derniers ajoutent un niveau d'information supplémentaire au code source du programme, mais elles n'ont pas d'effets directs sur les entités qu'elles concernent.\newline
+
+Ces fameuses données sémantiques peuvent être lues par des programmes comme des générateurs de documentation \textbf{ScalaDoc}, mais elles sont aussi lues par le compilateur.\newline
+
+Un simple exemple des annotations que avez probablement déjà vu est \textbf{@override}, qu’on utilise en \textbf{Java} par exemple pour définir une méthode qui est héritée de la classe parente. On ne l'utilise donc que dans le cas de l'héritage. En plaçant ce mot-clé avant l’implémentation de la méthode réécrite, le compilateur vérifiera que la méthode est correctement utilisée (mêmes arguments, même type de valeur de retour) et affichera un message d'avertissement si ce n'est pas le cas.\newline
+
+Ce tutoriel vous montre comment utiliser les annotations en \textbf{Scala}. Il montre aussi leurs syntaxe générale, et le rôle de quelque annotations standards.
+\section{L’utilisation des annotations}
+Afin d’aider les développeur à produire un code propre, lisible et documenté, l’utilisation des annotations concernent les fonctionnalités suivantes :
+\subsection{Génération de la documentation ScalaDoc}
+Les annotations permettent de simplifier considérablement le processus de documentation des programme, car elles sont intégrés directement dans le code, et il n'est pas nécessaire de créer et maintenir les fichiers externes comme ScalaDoc. 
+
+
+\subsection{Génération du code}
+	Quelques annotations permettent de respecter certains conventions de dénomination, vous allez trouver l’exemple de @scala.beans.BeanProperty dans la partie annotation standards de ce tutoriel, qui permet de respecter la convention de dénomination des getters et setters. 
+
+\subsection{Vérifier l'existence des erreurs dans le code}
+	Les annotations aident les développeurs à détecter les erreurs qu’ils ont fait, comme l’ouverture d’un fichier sans le fermer.
+
+
+
+
+\section{syntaxe des annotations}
+Les annotations sont autorisées sur tout type de déclaration, comme les classes, les méthodes, les interfaces, les variables, et elles peuvent avoir des paramètres en entré, de plus elles doivent obligatoirement précéder les entité qu'elles annottent, et plusieurs annotations peuvent être utilisés pour le même type de déclaration sans considérer l’ordre.\\
+
+La forme générale des annotations est la suivante :
+\subsubsection{@annot(exp1,exp2,...,expN)\newline}
+
+\textit{\textbf{- annot} specifie la classe de l'annotation (le nom)\newline
+\textbf{ - ex} specifie les paramêtres de l'annotation}
+
+
+
+
+\begin{table}
+\caption{exemples d’annotations sur 5 types de déclaration.}\label{tab1}
+\begin{tabular}{|l|l|}
+\hline
+Type de déclaration &  Exemple d’annotation\\
+\hline
+
+Annotation des méthodes & \textbf{\textit{@deprecated}} def methode()= …\\
+Annotation des classes & \textbf{\textit{@serializable}} class NomDeLaClasse{ ... }\\
+Annotation des expression &  … (X : \textbf{\textit{@unchecked}}) match{ ... }\\
+annotation des types & String \textit{\textbf{@local}}\\
+annotation des variables & \textit{\textbf{@trasient}} var variable: Int\\
+\hline
+\end{tabular}
+\end{table}
+
+\section{Les annotations standards}
+Scala comprend plusieurs types annotations standards dont \textbf{Java Platform}, \textbf{Java Beans}, \textbf{Deprecation}, et \textbf{Scala Compiler}, dans cette partie je vais vous citer quelques exemple dans chaque type d’annotation :
+
+\subsection{Les annotation de Java Platform en Scala}
+Les annotations permettent de simplifier considérablement le processus de documentation des programme, car elles sont intégrés directement dans le code, et il n'est pas nécessaire de créer et maintenir les fichiers externes comme ScalaDoc. 
+
+\begin{itemize}
+\item \textbf{@transient}: permet d'interdire la sérialisation de certaines variables d'une classe.
+\item \textbf{@volatile} : est utilisé sur les variables qui peuvent être modifiées de manière asynchrone. C'est-à-dire que plusieurs threads peuvent y accéder simultanément.
+\item \textbf{@throws(exception)} : est utilisé pour déclarer qu’une exception peut être levées. 
+\end{itemize}
+
+\textbf{Exemple d’utilisation de l’annotation @throws :\\}
+
+ L’exception \textbf{UnsupportedAudioFileException} peut être levée lors de l’utilisation de la \textit{fonction jouerLaMusic()} dans le code suivant :
+
+\begin{figure}
+\includegraphics[width=\textwidth]{image0.png}
+\caption{l'utilisation de l'annotation @throws pour lever une exception} \label{fig1}
+\end{figure}
+
+
+\subsection{Les annotations de Java Beans en Scala}
+En ce qui concerne les annotations de \textbf{Java Beans} en Scala, leurs utilisation aide le développeur à respecter les conventions de dénomination pour définir les "attributs" d’un bean, comme les getters et les setters. Pour 	l’exemple on peut citer les deux annotations suivantes :
+
+\begin{itemize}
+\item \textbf{@scala.beans.BeanProperty} : à pour but d’ajouter les getters et les setters (\textit{getX}, \textit{setX}) à la classe concernée.
+\item \textbf{@scala.beans.BooleanBeanProperty} : à le même but que l’annotation précédente, sauf qu’elle renomme les getters en \textbf{isX} si le type de la variable est boolean.
+\end{itemize}
+
+
+\subsection{L’annotation “deprecated”}
+Parfois, on écrit une méthode que nous souhaitons enlever plus tard, mais une fois implémenté, le code écrit par d’autres personnes peut appeler la méthode. Par conséquent, nous ne pouvons pas simplement supprimer la méthode, car cela empêcherait la compilation du code des autres qui l’utilisent.\\
+
+	l‘annotation \textbf{@Deprecated} nous permettent de supprimer gracieusement une méthode ou une classe qui s'avère être une erreur. Nous marquions la méthode ou la classe comme obsolète, puis toute personne qui appelle cette méthode ou cette classe recevra un avertissement comme quoi il ne faudrait plus l'utiliser.\\
+
+Alors L'idée est qu'après quelque temps suffisant, nous pouvons supposer que tous les développeurs ont cessé d'accéder à la classe ou à la méthode obsolète et que nous pouvons donc la supprimer en toute sécurité.\\
+
+	Nous marquions une méthode comme étant obsolète en écrivant simplement \textbf{@deprecated} avant celle-ci. \\
+
+\textbf{Par exemple:}
+\begin{figure}
+\includegraphics[width=\textwidth]{image1.png}
+\caption{l'utilisation de l'annotation @deprecated} \label{fig2}
+\end{figure}
+
+
+Ce code se compile, mais un avertissement va s’afficher pour nous informer que la fonction utilisé est obsolète.
+
+\begin{figure}
+\includegraphics[width=\textwidth]{image2.png}
+\caption{le warning est affiché par le compilateur} \label{fig3}
+\end{figure}
+
+
+\subsection{Les annotations du compilateurs Scala}
+Dans cette partie on va prendre l’exemple de l’annotation \textbf{@unchecked} qui appartient aux annotation du compilateur Scala, cette annotation permet de banaliser les avertissements, comme dans le cas des sélecteurs “pattern matching”, qui ne sont pas exhaustives. 
+Pour sentir l’impact de l'utilisation de cette annotation, le code suivant est une application d’un sélecteur non exhaustif sans l’utilisation de \textbf{@unchecked} :
+
+
+
+Après avoir lancer le code ci-dessus, le compilateur génère un avertissement.\\
+
+
+
+Mais lorsqu’on ajoute l’annotation \textbf{@unchecked} devant X, le compilateur ne génère plus d'avertissement.
+
+\begin{figure}
+\includegraphics[width=\textwidth]{image5.png}
+\caption{Selecteur non exhaustif avec l’annotation @unchecked} \label{fig4}
+\end{figure}
+
+
+\subsubsection{Remarque } 
+   :\newline
+Par manque de temps, la liste des annotations standards présentés dans ce tutoriel n'est pas exhaustive, mais ça vous donne une idée claire sur les annotations prédéfinis en Scala, pour plus  d’annotations standards consultez le lien de la documentation officielle suivant :\newline\newline
+\textbf{ww.scala-lang.org/api/2.12.0-M5/scala/annotation/index.html}
+
+\end{document}
